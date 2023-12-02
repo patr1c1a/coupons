@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 /**
  * Service for calculating coupon items based on given ids and available coupon amount.
  */
 @Service
 public class CouponService {
+
+    @Autowired
+    private MercadoLibreTokenService tokenService;  //token to make api calls
 
     /**
      * Calculates which items should be added to maximize coupon expenditure.
@@ -19,6 +24,8 @@ public class CouponService {
      * @return CouponResponse containing the selected item IDs and total expenditure.
      */
     public CouponResponse calculateCouponItems(CouponRequest request) {
+        String accessToken = tokenService.getAccessToken();
+
         List<String> itemIds = request.getItemIds();
         double remainingCouponAmount = request.getCouponAmount();
 
@@ -49,7 +56,7 @@ public class CouponService {
         return response;
     }
 
-    
+
     /**
      * Checks if an item ID is valid (item is valid if a price other than 0.0 is found for it).
      *
