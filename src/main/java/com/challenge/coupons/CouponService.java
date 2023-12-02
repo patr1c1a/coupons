@@ -14,33 +14,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CouponService {
 
     @Autowired
-    private MercadoLibreTokenService tokenService;  //token to make api calls
+    private MercadoLibreTokenService tokenService;
+
+    @Autowired
+    private MercadoLibreApiService mercadoLibreApiService;
+
+    private String accessToken;
 
     /**
      * Calculates which items should be added to maximize coupon expenditure.
-     * Empty item ids and items with unknown prices are ignored.
+     * Items that are not active are ignored.
      *
      * @param request The coupon request containing item_ids and coupon amount.
      * @return CouponResponse containing the selected item IDs and total expenditure.
      */
     public CouponResponse calculateCouponItems(CouponRequest request) {
-        String accessToken = tokenService.getAccessToken();
+        if (accessToken == null) {
+            accessToken = tokenService.getAccessToken();
+        }
 
         List<String> itemIds = request.getItemIds();
         double remainingCouponAmount = request.getCouponAmount();
-
         List<String> selectedItems = new ArrayList<>();
 
         List<String> validItemIds = new ArrayList<>();
         for (String itemId : itemIds) {
-            if (isValidItemId(itemId)) {
+            if (isItemActive(itemId, accessToken)) {
                 validItemIds.add(itemId);
             }
         }
 
-        validItemIds.sort(Comparator.comparingDouble(this::getItemPrice));
+        validItemIds.sort(Comparator.comparingDouble(itemId -> mercadoLibreApiService.getItemPrice(itemId, accessToken)));
         for (String itemId : validItemIds) {
-            double itemPrice = getItemPrice(itemId);
+            double itemPrice = mercadoLibreApiService.getItemPrice(itemId, accessToken);
             if (remainingCouponAmount - itemPrice >= 0) {
                 selectedItems.add(itemId);
                 remainingCouponAmount -= itemPrice;
@@ -58,34 +64,21 @@ public class CouponService {
 
 
     /**
-     * Checks if an item ID is valid (item is valid if a price other than 0.0 is found for it).
+     * Checks if an item ID is valid (status is "active").
      *
      * @param itemId The item ID to check.
      * @return true if the item ID is valid, false otherwise.
      */
-    private boolean isValidItemId(String itemId) {
-        if (getItemPrice(itemId) == 0.0)
-            return false;
-        else
-            return true;
+    protected boolean isItemActive(String itemId, String accessToken) {
+        return mercadoLibreApiService.getItemStatus(itemId, accessToken) == "active";
     }
 
 
-    /**
-     * Gets the price of an item based on its ID.
-     * Includes test data with example item prices.
-     *
-     * @param itemId The ID of the item.
-     * @return The price of the item, or 0.0 if the ID is unknown.
-     */
-    private double getItemPrice(String itemId) {
-        switch (itemId) {
-            case "MLA1": return 100.0;
-            case "MLA2": return 210.0;
-            case "MLA3": return 260.0;
-            case "MLA4": return 80.0;
-            case "MLA5": return 90.0;
-            default: return 0.0;
-        }
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }
