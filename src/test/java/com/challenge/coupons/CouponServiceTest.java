@@ -28,12 +28,20 @@ public class CouponServiceTest {
      */
     @Test
     public void testCalculateCouponItems_multipleItems() {
-        //mocked API response
+        //mocked getItemPrice
         when(mercadoLibreApiService.getItemPrice("MLA1", "mockAccessToken")).thenReturn(100.0);
         when(mercadoLibreApiService.getItemPrice("MLA2", "mockAccessToken")).thenReturn(210.0);
         when(mercadoLibreApiService.getItemPrice("MLA3", "mockAccessToken")).thenReturn(260.0);
         when(mercadoLibreApiService.getItemPrice("MLA4", "mockAccessToken")).thenReturn(80.0);
         when(mercadoLibreApiService.getItemPrice("MLA5", "mockAccessToken")).thenReturn(90.0);
+
+        //mocked getItemStatus
+        when(mercadoLibreApiService.getItemStatus("MLA1", "mockAccessToken")).thenReturn("active");
+        when(mercadoLibreApiService.getItemStatus("MLA2", "mockAccessToken")).thenReturn("active");
+        when(mercadoLibreApiService.getItemStatus("MLA3", "mockAccessToken")).thenReturn("active");
+        when(mercadoLibreApiService.getItemStatus("MLA4", "mockAccessToken")).thenReturn("active");
+        when(mercadoLibreApiService.getItemStatus("MLA5", "mockAccessToken")).thenReturn("active");
+
         couponService.setAccessToken("mockAccessToken");
 
         CouponRequest request = new CouponRequest();
@@ -74,9 +82,12 @@ public class CouponServiceTest {
      */
     @Test
     public void testCalculateCouponItems_oneItem() {
-        //mocked API response
+        //mocked getItemPrice
         when(mercadoLibreApiService.getItemPrice("MLA1", "mockAccessToken")).thenReturn(100.0);
         couponService.setAccessToken("mockAccessToken");
+        
+        //mocked getItemStatus
+        when(mercadoLibreApiService.getItemStatus("MLA1", "mockAccessToken")).thenReturn("active");
         
         CouponRequest request = new CouponRequest();
         request.setItemIds(Arrays.asList("MLA1"));
