@@ -7,6 +7,13 @@ public class CouponResponse {
     private List<String> itemIds;
     private double totalExpenditure;
     
+    public CouponResponse(List<String> itemIds, double totalExpenditure) {
+        this.itemIds=itemIds;
+        this.totalExpenditure=totalExpenditure;
+    }
+    
+    public CouponResponse() {
+    }
     
     public List<String> getItemIds() {
         return itemIds;
