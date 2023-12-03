@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -72,7 +73,13 @@ public class CouponService {
      * @return true if the item ID is valid, false otherwise.
      */
     protected boolean isItemActive(String itemId, String accessToken) {
-        return "active".equals(mercadoLibreApiService.getItemStatus(itemId, accessToken));
+        try {
+            String status = mercadoLibreApiService.getItemStatus(itemId, accessToken);
+            return "active".equals(status);
+        } catch (HttpClientErrorException e) {
+            String responseBody = e.getResponseBodyAsString();
+            return !responseBody.contains("\"error\"");
+        }
     }
 
 
