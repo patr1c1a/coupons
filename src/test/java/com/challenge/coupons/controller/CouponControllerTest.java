@@ -3,6 +3,7 @@ package com.challenge.coupons.controller;
 import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -13,12 +14,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import com.challenge.coupons.controller.CouponController;
 import com.challenge.coupons.model.CouponRequest;
 import com.challenge.coupons.model.CouponResponse;
 import com.challenge.coupons.service.CouponService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -35,8 +36,11 @@ public class CouponControllerTest {
     @InjectMocks
     private CouponController couponController;
 
+
+    /**
+     * POST to /coupon when input is valid.
+     */
     @Test
-    //when valid input
     public void testGetCoupon_ValidInput_ReturnsExpectedResponse() throws Exception {
         //mock service layer
         Mockito.when(couponService.calculateCouponItems(Mockito.any(CouponRequest.class)))
@@ -64,8 +68,11 @@ public class CouponControllerTest {
         JSONAssert.assertEquals(expectedResponse, actualResponse, true);
     }
 
+
+    /**
+     * POST to /coupon when coupon amount < 0.
+     */
     @Test
-    //when coupon amount < 0
     public void testGetCoupon_InvalidInput_ReturnsErrorStatus() throws Exception {        
         //mock service layer
         Mockito.when(couponService.calculateCouponItems(Mockito.any(CouponRequest.class)))
@@ -86,5 +93,30 @@ public class CouponControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * GET to /top-favorited to retrieve the top favorited items.
+     */
+    @Test
+    public void testGetTopFavoritedItems_ReturnsExpectedResponse() throws Exception {
+        //mock service layer
+        Mockito.when(couponService.getTopFavoritedItems(Mockito.anyInt()))
+                .thenReturn(Map.of(
+                        "MLA1", 15,
+                        "MLA4", 9,
+                        "MLA3", 7,
+                        "MLA2", 6,
+                        "MLA5", 3
+                ));
+    
+        MvcResult result = mockMvc.perform(get("/top-favorited")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+    
+        String expectedResponse = "{\"MLA1\":15,\"MLA4\":9,\"MLA3\":7,\"MLA2\":6,\"MLA5\":3}";
+        String actualResponse = result.getResponse().getContentAsString();
+        JSONAssert.assertEquals(expectedResponse, actualResponse, true);
     }
 }

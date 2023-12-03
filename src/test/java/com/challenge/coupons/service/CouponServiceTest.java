@@ -4,13 +4,11 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.springframework.boot.test.context.SpringBootTest;
+import java.util.Map;
 
+import org.springframework.boot.test.context.SpringBootTest;
 import com.challenge.coupons.model.CouponRequest;
 import com.challenge.coupons.model.CouponResponse;
-import com.challenge.coupons.service.CouponService;
-import com.challenge.coupons.service.MercadoLibreApiService;
-
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -161,5 +159,28 @@ public class CouponServiceTest {
 
         assertEquals(Collections.emptyList(), response.getItemIds());
         assertEquals(expectedTotalExpenditure, response.getTotalExpenditure());
+    }
+
+    /**
+     * Tests getting the top 5 favorited items.
+     */
+    @Test
+    public void testGetTopFavoritedItems() {
+        //mocked getFavoritedItemCounts
+        couponService.getFavoritedItemCounts().put("MLA1", 15);
+        couponService.getFavoritedItemCounts().put("MLA4", 9);
+        couponService.getFavoritedItemCounts().put("MLA3", 7);
+        couponService.getFavoritedItemCounts().put("MLA2", 6);
+        couponService.getFavoritedItemCounts().put("MLA5", 3);
+
+        Map<String, Integer> result = couponService.getTopFavoritedItems(3);
+
+        Map<String, Integer> expected = Map.of(
+                "MLA1", 15,
+                "MLA4", 9,
+                "MLA3", 7
+        );
+
+        assertEquals(expected, result);
     }
 }

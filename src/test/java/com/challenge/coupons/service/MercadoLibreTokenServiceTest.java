@@ -7,10 +7,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.client.RestTemplate;
-
 import com.challenge.coupons.dto.MercadoLibreTokenResponse;
-import com.challenge.coupons.service.MercadoLibreTokenService;
-
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 

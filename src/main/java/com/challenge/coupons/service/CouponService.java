@@ -2,7 +2,9 @@ package com.challenge.coupons.service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -24,6 +26,9 @@ public class CouponService {
     private MercadoLibreApiService mercadoLibreApiService;
 
     private String accessToken;
+
+    private final Map<String, Integer> favoritedItemCounts = new HashMap<>();
+
 
     /**
      * Calculates which items should be added to maximize item amount while spending coupon.
@@ -59,6 +64,11 @@ public class CouponService {
             }
         }
 
+        //increment favorited item counts
+        for (String itemId : validItemIds) {
+            favoritedItemCounts.put(itemId, favoritedItemCounts.getOrDefault(itemId, 0) + 1);
+        }
+
         CouponResponse response = new CouponResponse();
         response.setItemIds(selectedItems);
         response.setTotalExpenditure(request.getCouponAmount() - remainingCouponAmount);
@@ -82,6 +92,20 @@ public class CouponService {
         }
     }
 
+    /**
+     * Get the top favorited items.
+     *
+     * @param top The number of favorited items to return.
+     * @return Map of top favorited items with their respective counts.
+     */
+    public Map<String, Integer> getTopFavoritedItems(int top) {
+        return favoritedItemCounts.entrySet()
+            .stream()
+            .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+            .limit(top)
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
 
     public String getAccessToken() {
         return accessToken;
@@ -89,5 +113,9 @@ public class CouponService {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public Map<String, Integer> getFavoritedItemCounts() {
+        return favoritedItemCounts;
     }
 }
