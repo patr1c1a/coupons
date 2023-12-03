@@ -58,6 +58,40 @@ public class CouponServiceTest {
     }
 
     /**
+     * Tests calculation of items when some favorite items are not active.
+     */
+    @Test
+    public void testCalculateCouponItems_notActive() {
+        //mocked getItemPrice
+        when(mercadoLibreApiService.getItemPrice("MLA1", "mockAccessToken")).thenReturn(100.0);
+        when(mercadoLibreApiService.getItemPrice("MLA2", "mockAccessToken")).thenReturn(210.0);
+        when(mercadoLibreApiService.getItemPrice("MLA3", "mockAccessToken")).thenReturn(260.0);
+        when(mercadoLibreApiService.getItemPrice("MLA4", "mockAccessToken")).thenReturn(80.0);
+        when(mercadoLibreApiService.getItemPrice("MLA5", "mockAccessToken")).thenReturn(90.0);
+
+        //mocked getItemStatus
+        when(mercadoLibreApiService.getItemStatus("MLA1", "mockAccessToken")).thenReturn("active");
+        when(mercadoLibreApiService.getItemStatus("MLA2", "mockAccessToken")).thenReturn("paused");
+        when(mercadoLibreApiService.getItemStatus("MLA3", "mockAccessToken")).thenReturn("active");
+        when(mercadoLibreApiService.getItemStatus("MLA4", "mockAccessToken")).thenReturn("paused");
+        when(mercadoLibreApiService.getItemStatus("MLA5", "mockAccessToken")).thenReturn("active");
+
+        couponService.setAccessToken("mockAccessToken");
+
+        CouponRequest request = new CouponRequest();
+        request.setItemIds(Arrays.asList("MLA1", "MLA2", "MLA3", "MLA4", "MLA5"));
+        request.setCouponAmount(1000);
+
+        CouponResponse response = couponService.calculateCouponItems(request);
+
+        List<String> expectedItems = Arrays.asList("MLA5", "MLA1", "MLA3");
+        double expectedTotalExpenditure = 450.0;
+
+        assertEquals(expectedItems, response.getItemIds());
+        assertEquals(expectedTotalExpenditure, response.getTotalExpenditure());
+    }
+
+    /**
      * Tests calculation of items when no favorite items are provided.
      */
     @Test
