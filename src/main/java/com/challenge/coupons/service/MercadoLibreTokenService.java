@@ -1,4 +1,4 @@
-package com.challenge.coupons;
+package com.challenge.coupons.service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.challenge.coupons.dto.MercadoLibreTokenResponse;
 
 
 /**

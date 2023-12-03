@@ -1,12 +1,13 @@
-package com.challenge.coupons;
+package com.challenge.coupons.service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import com.challenge.coupons.model.CouponRequest;
+import com.challenge.coupons.model.CouponResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -71,7 +72,7 @@ public class CouponService {
      * @param itemId The item ID to check.
      * @return true if the item ID is valid, false otherwise.
      */
-    protected boolean isItemActive(String itemId, String accessToken) {
+    public boolean isItemActive(String itemId, String accessToken) {
         try {
             String status = mercadoLibreApiService.getItemStatus(itemId, accessToken);
             return "active".equals(status);

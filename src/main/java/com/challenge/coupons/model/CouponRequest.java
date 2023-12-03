@@ -1,4 +1,4 @@
-package com.challenge.coupons;
+package com.challenge.coupons.model;
 
 import java.util.List;
 

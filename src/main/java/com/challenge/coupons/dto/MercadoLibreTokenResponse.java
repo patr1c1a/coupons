@@ -1,4 +1,4 @@
-package com.challenge.coupons;
+package com.challenge.coupons.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

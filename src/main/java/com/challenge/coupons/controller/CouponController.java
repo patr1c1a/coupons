@@ -1,10 +1,14 @@
-package com.challenge.coupons;
+package com.challenge.coupons.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.challenge.coupons.model.CouponRequest;
+import com.challenge.coupons.model.CouponResponse;
+import com.challenge.coupons.service.CouponService;
 
 
 /**

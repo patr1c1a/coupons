@@ -5,6 +5,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import com.challenge.coupons.model.CouponRequest;
+import com.challenge.coupons.model.CouponResponse;
+import com.challenge.coupons.service.CouponService;
+import com.challenge.coupons.service.MercadoLibreApiService;
+
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
