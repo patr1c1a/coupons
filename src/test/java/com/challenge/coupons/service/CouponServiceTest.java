@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.boot.test.context.SpringBootTest;
 import com.challenge.coupons.model.CouponRequest;
 import com.challenge.coupons.model.CouponResponse;

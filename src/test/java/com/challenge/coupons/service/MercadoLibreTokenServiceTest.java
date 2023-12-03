@@ -6,12 +6,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
 import com.challenge.coupons.dto.MercadoLibreTokenResponse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 
+@SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
 public class MercadoLibreTokenServiceTest {
 
