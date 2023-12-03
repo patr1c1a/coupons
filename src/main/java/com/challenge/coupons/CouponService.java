@@ -38,17 +38,10 @@ public class CouponService {
         }
 
         //select only active items and remove duplicates
-        List<String> itemIds = request.getItemIds();
-        List<String> itemIdsWithoutDuplicates = itemIds.stream()
-        .distinct()
-        .collect(Collectors.toList());
-
-        List<String> validItemIds = new ArrayList<>();
-        for (String itemId : itemIdsWithoutDuplicates) {
-            if (isItemActive(itemId, accessToken)) {
-                validItemIds.add(itemId);
-            }
-        }
+        List<String> itemIds = request.getItemIds().stream().distinct().collect(Collectors.toList());
+        List<String> validItemIds = itemIds.stream()
+                .filter(itemId -> isItemActive(itemId, accessToken))
+                .collect(Collectors.toList());
 
         //sort items by price (asc) to maximize item amount while spending coupon
         validItemIds.sort(Comparator.comparingDouble(itemId -> mercadoLibreApiService.getItemPrice(itemId, accessToken)));
