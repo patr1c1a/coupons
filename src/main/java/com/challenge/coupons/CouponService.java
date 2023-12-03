@@ -22,21 +22,20 @@ public class CouponService {
     private String accessToken;
 
     /**
-     * Calculates which items should be added to maximize coupon expenditure.
+     * Calculates which items should be added to maximize item amount while spending coupon.
      * Items that are not active are ignored.
      *
      * @param request The coupon request containing item_ids and coupon amount.
      * @return CouponResponse containing the selected item IDs and total expenditure.
      */
     public CouponResponse calculateCouponItems(CouponRequest request) {
+        //get a valid access token
         if (accessToken == null) {
             accessToken = tokenService.getAccessToken();
         }
 
+        //select only items that are active
         List<String> itemIds = request.getItemIds();
-        double remainingCouponAmount = request.getCouponAmount();
-        List<String> selectedItems = new ArrayList<>();
-
         List<String> validItemIds = new ArrayList<>();
         for (String itemId : itemIds) {
             if (isItemActive(itemId, accessToken)) {
@@ -44,7 +43,10 @@ public class CouponService {
             }
         }
 
+        //sort items by price (asc) to maximize item amount while spending coupon
         validItemIds.sort(Comparator.comparingDouble(itemId -> mercadoLibreApiService.getItemPrice(itemId, accessToken)));
+        double remainingCouponAmount = request.getCouponAmount();
+        List<String> selectedItems = new ArrayList<>();
         for (String itemId : validItemIds) {
             double itemPrice = mercadoLibreApiService.getItemPrice(itemId, accessToken);
             if (remainingCouponAmount - itemPrice >= 0) {
@@ -70,7 +72,7 @@ public class CouponService {
      * @return true if the item ID is valid, false otherwise.
      */
     protected boolean isItemActive(String itemId, String accessToken) {
-        return mercadoLibreApiService.getItemStatus(itemId, accessToken) == "active";
+        return "active".equals(mercadoLibreApiService.getItemStatus(itemId, accessToken));
     }
 
 
