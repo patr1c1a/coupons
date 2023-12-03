@@ -3,6 +3,8 @@ package com.challenge.coupons;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +37,14 @@ public class CouponService {
             accessToken = tokenService.getAccessToken();
         }
 
-        //select only items that are active
+        //select only active items and remove duplicates
         List<String> itemIds = request.getItemIds();
+        List<String> itemIdsWithoutDuplicates = itemIds.stream()
+        .distinct()
+        .collect(Collectors.toList());
+
         List<String> validItemIds = new ArrayList<>();
-        for (String itemId : itemIds) {
+        for (String itemId : itemIdsWithoutDuplicates) {
             if (isItemActive(itemId, accessToken)) {
                 validItemIds.add(itemId);
             }
