@@ -1,4 +1,4 @@
-package com.challenge.coupons;
+package com.challenge.coupons.controller;
 
 import org.junit.jupiter.api.Test;
 import java.util.Arrays;

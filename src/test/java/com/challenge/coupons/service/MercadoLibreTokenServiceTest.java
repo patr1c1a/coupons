@@ -1,4 +1,4 @@
-package com.challenge.coupons;
+package com.challenge.coupons.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
