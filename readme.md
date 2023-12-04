@@ -1,4 +1,11 @@
-# Install and setup project
+# Public API
+
+API is publicly available at http://15.228.79.119:8080.
+
+View *endpoint description* below to put in place the complete url (e.g.: http://15.228.79.119:8080/top-favorited).
+
+
+# Install and setup project locally
 
 * Clone project.
 
@@ -107,19 +114,23 @@ Returns:
 
 - `dto`: third party api entities.
 
-- `config`: contains Rest Template configuration file
+- `config`: configuration file
 
 `src\test`: test files
 
 
 # Improvements
 
-Some important details that weren't implemented due to time constraints, but should be taken into consideration:
+Some important details weren't implemented due to time constraints, but should be taken into consideration:
 
 - Persistence: the `/top-favorited` endpoint relies on in-memory storage. Depending on the production requirements, database persistence would probably be better suited for this. The choice would heavily depend on other details but for a simple implementation something like H2 (with disk persistence) might be an option to consider.
 
 - Caching: in order to handle multiple requests that might include the same item ids, caching would improve performance.
 
+- Security: a mechanism like OAuth 2.0 or JWT should be implemented to secure the endpoints.
+
 - Logging.
 
 - Documentation: improve documentation by using a tool that provides better formatting and functionality (like Swagger).
+
+- More test cases: An in-depth analysis of test scenarios should be done, followed by the addition of test cases that cover them.
